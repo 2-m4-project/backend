@@ -1,0 +1,10 @@
+.idea
+*.iml
+*.ipr
+*.iws
+*.ids
+.gradle
+build
+run/*
+!run/localhost:8001.crt
+!run/localhost:8001.key

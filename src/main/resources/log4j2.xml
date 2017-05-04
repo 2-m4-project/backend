@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+    <Appenders>
+        <Console name="SysOut" target="SYSTEM_OUT">
+            <!--<PatternLayout pattern="[%d{HH:mm:ss}] [%t/%level]: %msg%n" />-->
+            <PatternLayout pattern="%d %highlight{%-5level} %msg%n" />
+            <Filters>
+                <MarkerFilter marker="REVERB_SQL" onMatch="DENY" onMismatch="NEUTRAL"/>
+                <MarkerFilter marker="REVERB_ACCESS" onMatch="DENY" onMismatch="NEUTRAL"/>
+            </Filters>
+        </Console>
+        <Console name="AccessLogSysOut" target="SYSTEM_OUT">
+            <!--<PatternLayout pattern="[%d{HH:mm:ss}] [%t/%level]: %msg%n" />-->
+            <PatternLayout pattern="%d ACC   %msg%n" />
+            <MarkerFilter marker="REVERB_ACCESS" onMatch="ACCEPT" onMismatch="DENY"/>
+        </Console>
+        <RollingRandomAccessFile name="File" fileName="logs/application.log" filePattern="logs/application-%d{yyyy-MM-dd}-%i.log">
+            <PatternLayout pattern="[%d{HH:mm:ss}] [%t/%level]: %msg%n" />
+            <DefaultRolloverStrategy max="3" fileIndex="max" />
+            <Policies>
+                <OnStartupTriggeringPolicy />
+            </Policies>
+        </RollingRandomAccessFile>
+        <RandomAccessFile name="NettyLog" fileName="logs/netty.log">
+            <PatternLayout pattern="[%d{HH:mm:ss}] [%t/%level]: %msg%n" />
+        </RandomAccessFile>
+        <RandomAccessFile name="HttpClientLog" fileName="logs/httpclient.log">
+            <PatternLayout pattern="[%d{HH:mm:ss}] [%t/%level]: %msg%n" />
+        </RandomAccessFile>
+        <RandomAccessFile name="AccessLog" fileName="logs/access.log">
+            <PatternLayout pattern="%d: %msg%n" />
+            <MarkerFilter marker="REVERB_ACCESS" onMatch="ACCEPT" onMismatch="DENY"/>
+        </RandomAccessFile>
+    </Appenders>
+    <Loggers>
+        <Logger name="io.netty" level="all" additivity="false">
+            <AppenderRef ref="NettyLog" level="all"/>
+            <AppenderRef ref="SysOut" level="info"/>
+            <AppenderRef ref="File" level="info"/>
+        </Logger>
+        <Root level="all">
+            <AppenderRef ref="SysOut"/>
+            <AppenderRef ref="File"/>
+        </Root>
+    </Loggers>
+</Configuration>
