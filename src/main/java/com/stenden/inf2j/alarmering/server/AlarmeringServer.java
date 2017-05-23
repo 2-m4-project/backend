@@ -43,7 +43,7 @@ public final class AlarmeringServer {
                 .handlerFactory(this.injector.getInstance(GuiceHandlerFactory.class))
                 .router()
                     .GET(1000, "/api/profiel/:naam", DemoHandler.class)
-                    .GET(1000, "/api/history/:naam", HistoryHandler.class)
+                    .GET(1000, "/api/history/:id", HistoryHandler.class)
                 .end()
                 .start(this.config.getConfig("http-server"));
     }

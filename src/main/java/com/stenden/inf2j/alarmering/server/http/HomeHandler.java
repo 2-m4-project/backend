@@ -13,7 +13,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
 @NonnullByDefault
-public class HistoryHandler implements RequestHandler<DemoRequest, JsonObject> {
+public class HomeHandler implements RequestHandler<DemoRequest, JsonObject> {
 
     @Inject
     private SqlProvider sqlProvider;
@@ -22,7 +22,7 @@ public class HistoryHandler implements RequestHandler<DemoRequest, JsonObject> {
     private Executor executor;
 
     @Override
-    public CompletableFuture<JsonObject> handle(RequestContext ctx, HistoryRequest request) throws Exception {
+    public CompletableFuture<JsonObject> handle(RequestContext ctx) throws Exception {
         return this.getRowFromDatabase();
     }
 
@@ -30,21 +30,18 @@ public class HistoryHandler implements RequestHandler<DemoRequest, JsonObject> {
         CompletableFuture<JsonObject> res = new CompletableFuture<>();
         this.executor.execute(() -> { // Onderstaande code asynchroon uitvoeren
             try(Connection conn = this.sqlProvider.getConnection()){ // Dit is een syntax trick om de verbinding automatisch terug naar de pool te geven als hij niet meer nodig is
-                PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM Geschiedenis WHERE Client_ID=?");
-                pstmt.setInt(1, 1); // Hier waarde vanuit de GET in :id
+                PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM Nieuws ORDER BY ID DESC");
 
                 Statement stmt = conn.createStatement();
 
                 JsonArray resArray = new JsonArray(); //De json array met het resultaat
 
-
                 ResultSet rs = pstmt.executeQuery();
                 while(rs.next()){ //Zolang er meer regels in het resultaat ding zitten
                     JsonObject row = new JsonObject();
-                        row.add("lat_long", rs.getString("Lat_Long"));
-                        row.add("Tijd", rs.getString("Tijd"));
-                        row.add("Melding", rs.getString("Melding"));
-                            resArray.add(row);
+                    row.add("Afbeelding", rs.getString("Afbeelding"));
+                    row.add("Text", rs.getString("Text"));
+                    resArray.add(row);
                 }
 
                 rs.close();
