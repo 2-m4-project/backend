@@ -13,7 +13,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
 @NonnullByDefault
-public class HistoryHandler implements RequestHandler<DemoRequest, JsonObject> {
+public class AlertHandler implements RequestHandler<DemoRequest, JsonObject> {
 
     @Inject
     private SqlProvider sqlProvider;
@@ -30,7 +30,7 @@ public class HistoryHandler implements RequestHandler<DemoRequest, JsonObject> {
         CompletableFuture<JsonObject> res = new CompletableFuture<>();
         this.executor.execute(() -> { // Onderstaande code asynchroon uitvoeren
             try(Connection conn = this.sqlProvider.getConnection()){ // Dit is een syntax trick om de verbinding automatisch terug naar de pool te geven als hij niet meer nodig is
-                PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM Geschiedenis WHERE Client_ID=? AND Melding == NULL");
+                PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM Geschiedenis WHERE Client_ID=? AND Melding != NULL");
                 pstmt.setInt(1, 1); // Hier waarde vanuit de GET in :id
 
                 Statement stmt = conn.createStatement();
@@ -41,9 +41,10 @@ public class HistoryHandler implements RequestHandler<DemoRequest, JsonObject> {
                 ResultSet rs = pstmt.executeQuery();
                 while(rs.next()){ //Zolang er meer regels in het resultaat ding zitten
                     JsonObject row = new JsonObject();
-                        row.add("lat_long", rs.getString("Lat_Long"));
-                        row.add("Tijd", rs.getString("Tijd"));
-                            resArray.add(row);
+                    row.add("lat_long", rs.getString("Lat_Long"));
+                    row.add("Tijd", rs.getString("Tijd"));
+                    row.add("Melding", rs.getString("Melding"));
+                    resArray.add(row);
                 }
 
                 rs.close();

@@ -13,7 +13,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
 @NonnullByDefault
-public class HistoryHandler implements RequestHandler<DemoRequest, JsonObject> {
+public class ProfileHandler implements RequestHandler<DemoRequest, JsonObject> {
 
     @Inject
     private SqlProvider sqlProvider;
@@ -22,28 +22,31 @@ public class HistoryHandler implements RequestHandler<DemoRequest, JsonObject> {
     private Executor executor;
 
     @Override
-    public CompletableFuture<JsonObject> handle(RequestContext ctx, HistoryRequest request) throws Exception {
+    public CompletableFuture<JsonObject> handle(RequestContext ctx, DemoRequest request) throws Exception {
         return this.getRowFromDatabase();
+
+        //return CompletableFuture.completedFuture(new JsonObject()
+        //        .add("success", true)
+        //        .add("naam", request.naam()));
     }
 
     private CompletableFuture<JsonObject> getRowFromDatabase(){
         CompletableFuture<JsonObject> res = new CompletableFuture<>();
         this.executor.execute(() -> { // Onderstaande code asynchroon uitvoeren
             try(Connection conn = this.sqlProvider.getConnection()){ // Dit is een syntax trick om de verbinding automatisch terug naar de pool te geven als hij niet meer nodig is
-                PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM Geschiedenis WHERE Client_ID=? AND Melding == NULL");
-                pstmt.setInt(1, 1); // Hier waarde vanuit de GET in :id
+                PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM iets WHERE naam=?");
+                pstmt.setInt(1, 1);
+                pstmt.setString(1, "");
 
                 Statement stmt = conn.createStatement();
 
                 JsonArray resArray = new JsonArray(); //De json array met het resultaat
 
-
-                ResultSet rs = pstmt.executeQuery();
+                ResultSet rs = stmt.executeQuery("SELECT * FROM iets");
                 while(rs.next()){ //Zolang er meer regels in het resultaat ding zitten
                     JsonObject row = new JsonObject();
-                        row.add("lat_long", rs.getString("Lat_Long"));
-                        row.add("Tijd", rs.getString("Tijd"));
-                            resArray.add(row);
+                    row.add("name", rs.getString("name"));
+                    resArray.add(row);
                 }
 
                 rs.close();
