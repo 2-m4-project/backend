@@ -8,3 +8,4 @@ build
 run/*
 !run/localhost:8001.crt
 !run/localhost:8001.key
+!run/data.db.mv.db.template
