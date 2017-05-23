@@ -8,10 +8,7 @@ import nl.jk5.jsonlibrary.JsonArray;
 import nl.jk5.jsonlibrary.JsonObject;
 
 import javax.inject.Inject;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
@@ -37,6 +34,10 @@ public class DemoHandler implements RequestHandler<DemoRequest, JsonObject> {
         CompletableFuture<JsonObject> res = new CompletableFuture<>();
         this.executor.execute(() -> { // Onderstaande code asynchroon uitvoeren
             try(Connection conn = this.sqlProvider.getConnection()){ // Dit is een syntax trick om de verbinding automatisch terug naar de pool te geven als hij niet meer nodig is
+                PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM iets WHERE naam=?");
+                pstmt.setInt(1, 1);
+                pstmt.setString(1, "");
+
                 Statement stmt = conn.createStatement();
 
                 JsonArray resArray = new JsonArray(); //De json array met het resultaat
@@ -47,7 +48,7 @@ public class DemoHandler implements RequestHandler<DemoRequest, JsonObject> {
                     row.add("name", rs.getString("name"));
                     resArray.add(row);
                 }
-                
+
                 rs.close();
                 stmt.close();
 
