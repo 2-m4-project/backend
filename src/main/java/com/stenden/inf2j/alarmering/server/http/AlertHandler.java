@@ -13,7 +13,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
 @NonnullByDefault
-public class AlertHandler implements RequestHandler<DemoRequest, JsonObject> {
+public class AlertHandler implements RequestHandler<AlertRequest, JsonObject> {
 
     @Inject
     private SqlProvider sqlProvider;
@@ -21,10 +21,7 @@ public class AlertHandler implements RequestHandler<DemoRequest, JsonObject> {
     @Inject
     private Executor executor;
 
-    @Override
-    public CompletableFuture<JsonObject> handle(RequestContext ctx, HistoryRequest request) throws Exception {
-        return this.getRowFromDatabase();
-    }
+
 
     private CompletableFuture<JsonObject> getRowFromDatabase(){
         CompletableFuture<JsonObject> res = new CompletableFuture<>();
@@ -59,5 +56,10 @@ public class AlertHandler implements RequestHandler<DemoRequest, JsonObject> {
             }
         });
         return res; //Returnen van de future. Op dit moment is zijn waarde nog niks, maar dat zal hij ooit in de toekomst (future) wel worden
+    }
+
+    @Override
+    public CompletableFuture<JsonObject> handle(RequestContext ctx, AlertRequest request) throws Exception {
+        return this.getRowFromDatabase();
     }
 }

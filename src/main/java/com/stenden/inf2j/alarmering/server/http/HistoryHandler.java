@@ -13,7 +13,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
 @NonnullByDefault
-public class HistoryHandler implements RequestHandler<DemoRequest, JsonObject> {
+public class HistoryHandler implements RequestHandler<HistoryRequest, JsonObject> {
 
     @Inject
     private SqlProvider sqlProvider;
