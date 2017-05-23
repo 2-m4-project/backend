@@ -3,6 +3,7 @@ package com.stenden.inf2j.alarmering.server.inject;
 import com.google.inject.Binder;
 import com.google.inject.Module;
 import com.google.inject.name.Names;
+import com.stenden.inf2j.alarmering.server.sql.SqlProvider;
 import com.typesafe.config.Config;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.epoll.Epoll;
@@ -41,5 +42,6 @@ public class GuiceModule implements Module {
         binder.bind(EventLoopGroup.class).annotatedWith(Names.named("Child")).toInstance(childGroup);
         binder.bind(boolean.class).annotatedWith(Names.named("UsingEpoll")).toInstance(usingEpoll);
         binder.bind(Config.class).toProvider(ConfigProvider.class);
+        binder.bind(SqlProvider.class).to(HikariSqlProvider.class);
     }
 }
