@@ -4,6 +4,7 @@ import com.google.inject.Binder;
 import com.google.inject.Module;
 import com.google.inject.name.Names;
 import com.stenden.inf2j.alarmering.server.sql.SqlProvider;
+import com.stenden.inf2j.alarmering.server.util.annotation.NonnullByDefault;
 import com.typesafe.config.Config;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.epoll.Epoll;
@@ -15,6 +16,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.Executor;
 
+@NonnullByDefault
 public class GuiceModule implements Module {
 
     private static final Logger logger = LoggerFactory.getLogger(GuiceModule.class);

@@ -2,6 +2,7 @@ package com.stenden.inf2j.alarmering.server.inject;
 
 import com.google.inject.Inject;
 import com.stenden.inf2j.alarmering.server.sql.SqlProvider;
+import com.stenden.inf2j.alarmering.server.util.annotation.NonnullByDefault;
 import com.typesafe.config.Config;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
@@ -11,6 +12,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 @Singleton
+@NonnullByDefault
 class HikariSqlProvider implements SqlProvider {
 
     private final HikariDataSource ds;

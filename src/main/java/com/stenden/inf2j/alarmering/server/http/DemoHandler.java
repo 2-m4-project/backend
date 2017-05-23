@@ -1,6 +1,7 @@
 package com.stenden.inf2j.alarmering.server.http;
 
 import com.stenden.inf2j.alarmering.server.sql.SqlProvider;
+import com.stenden.inf2j.alarmering.server.util.annotation.NonnullByDefault;
 import nl.jk5.http2server.api.RequestContext;
 import nl.jk5.http2server.api.RequestHandler;
 import nl.jk5.jsonlibrary.JsonArray;
@@ -14,6 +15,7 @@ import java.sql.Statement;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
+@NonnullByDefault
 public class DemoHandler implements RequestHandler<DemoRequest, JsonObject> {
 
     @Inject

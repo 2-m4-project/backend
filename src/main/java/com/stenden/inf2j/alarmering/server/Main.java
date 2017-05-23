@@ -3,7 +3,9 @@ package com.stenden.inf2j.alarmering.server;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.stenden.inf2j.alarmering.server.inject.GuiceModule;
+import com.stenden.inf2j.alarmering.server.util.annotation.NonnullByDefault;
 
+@NonnullByDefault
 public final class Main {
 
     private Main(){

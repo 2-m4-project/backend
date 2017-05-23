@@ -1,5 +1,6 @@
 package com.stenden.inf2j.alarmering.server.inject;
 
+import com.stenden.inf2j.alarmering.server.util.annotation.NonnullByDefault;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import org.slf4j.Logger;
@@ -12,6 +13,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 @Singleton
+@NonnullByDefault
 public class ConfigProvider implements Provider<Config> {
 
     private static final Logger logger = LoggerFactory.getLogger(ConfigProvider.class);
