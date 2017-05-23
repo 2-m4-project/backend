@@ -1,0 +1,74 @@
+CREATE SCHEMA Backend;
+USE Backend;
+
+CREATE TABLE BACKEND.Client
+(
+    ID INT AUTO_INCREMENT PRIMARY KEY,
+    IMEI INT,
+    Voornaam VARCHAR(50),
+    Achternaam VARCHAR(50)
+);
+
+CREATE TABLE BACKEND.Mantelzorger
+(
+    ID INT AUTO_INCREMENT PRIMARY KEY,
+    Voornaam VARCHAR(50),
+    Achternaam VARCHAR(50),
+    Email VARCHAR(100),
+    Telefoonnummer INT,
+    Gebruikersnaam VARCHAR(100),
+    Wachtwoord VARCHAR(64)
+);
+
+CREATE TABLE BACKEND.Permissies
+(
+    Client_ID INT,
+    Mantelzorger_ID INT
+);
+
+CREATE TABLE BACKEND.Geschiedenis
+(
+    ID INT AUTO_INCREMENT PRIMARY KEY,
+    Client_ID INT,
+    Lat_Long VARCHAR(100),
+    Tijd DATE,
+    Melding VARCHAR(255)
+);
+
+CREATE TABLE BACKEND.Nieuws
+(
+    ID INT AUTO_INCREMENT PRIMARY KEY,
+    Afbeelding VARCHAR(255),
+    Text TEXT
+);
+
+Client
+	ID
+	IMEI
+	voornaam
+	achternaam
+
+Mantelzorger
+	ID
+	Voornaam
+	Achternaam
+	Email
+	Telefoonnummer
+	Gebruikersnaam
+	Wachtwoord
+
+Permissies
+	Client_ID
+	Mantelzorger_ID
+
+Geschiedenis
+	ID
+	Client_ID
+	Lat_Long
+	Tijd
+	Melding
+
+Nieuws
+	ID
+	Afbeelding
+	Text

@@ -2,6 +2,7 @@ package com.stenden.inf2j.alarmering.server;
 
 import com.google.inject.Injector;
 import com.stenden.inf2j.alarmering.server.http.DemoHandler;
+import com.stenden.inf2j.alarmering.server.http.HistoryHandler;
 import com.stenden.inf2j.alarmering.server.inject.GuiceHandlerFactory;
 import com.stenden.inf2j.alarmering.server.util.annotation.NonnullByDefault;
 import com.typesafe.config.Config;
@@ -41,7 +42,8 @@ public final class AlarmeringServer {
                 .useEpoll(this.useEpoll)
                 .handlerFactory(this.injector.getInstance(GuiceHandlerFactory.class))
                 .router()
-                    .GET(1000, "/profiel/:naam", DemoHandler.class)
+                    .GET(1000, "/api/profiel/:naam", DemoHandler.class)
+                    .GET(1000, "/api/history/:naam", HistoryHandler.class)
                 .end()
                 .start(this.config.getConfig("http-server"));
     }

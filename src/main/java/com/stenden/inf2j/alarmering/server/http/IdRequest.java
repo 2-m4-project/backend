@@ -6,5 +6,5 @@ public interface IdRequest {
 
     int id();
 
-    Optional<String> naam();
+    //Optional<String> naam();
 }
