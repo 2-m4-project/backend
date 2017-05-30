@@ -21,8 +21,6 @@ public class AlertHandler implements RequestHandler<AlertRequest, JsonObject> {
     @Inject
     private Executor executor;
 
-
-
     private CompletableFuture<JsonObject> getRowFromDatabase(int id){
         CompletableFuture<JsonObject> res = new CompletableFuture<>();
         this.executor.execute(() -> { // Onderstaande code asynchroon uitvoeren
@@ -33,7 +31,6 @@ public class AlertHandler implements RequestHandler<AlertRequest, JsonObject> {
                 Statement stmt = conn.createStatement();
 
                 JsonArray resArray = new JsonArray(); //De json array met het resultaat
-
 
                 ResultSet rs = pstmt.executeQuery();
                 while(rs.next()){ //Zolang er meer regels in het resultaat ding zitten

@@ -4,7 +4,6 @@ import com.stenden.inf2j.alarmering.server.sql.SqlProvider;
 import com.stenden.inf2j.alarmering.server.util.annotation.NonnullByDefault;
 import nl.jk5.http2server.api.RequestContext;
 import nl.jk5.http2server.api.RequestHandler;
-import nl.jk5.http2server.api.annotation.Path;
 import nl.jk5.jsonlibrary.JsonArray;
 import nl.jk5.jsonlibrary.JsonObject;
 
@@ -26,7 +25,7 @@ public class HomeHandler implements RequestHandler<HomeRequest, JsonObject> {
         CompletableFuture<JsonObject> res = new CompletableFuture<>();
         this.executor.execute(() -> { // Onderstaande code asynchroon uitvoeren
             try(Connection conn = this.sqlProvider.getConnection()){ // Dit is een syntax trick om de verbinding automatisch terug naar de pool te geven als hij niet meer nodig is
-                PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM Nieuws ORDER BY ID DESC");
+                PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM nieuws ORDER BY id desc limit 6");
 
                 Statement stmt = conn.createStatement();
 
@@ -35,8 +34,8 @@ public class HomeHandler implements RequestHandler<HomeRequest, JsonObject> {
                 ResultSet rs = pstmt.executeQuery();
                 while(rs.next()){ //Zolang er meer regels in het resultaat ding zitten
                     JsonObject row = new JsonObject();
-                    row.add("Afbeelding", rs.getString("Afbeelding"));
-                    row.add("Text", rs.getString("Text"));
+                    row.add("afbeelding", rs.getString("afbeelding"));
+                    row.add("text", rs.getString("text"));
                     resArray.add(row);
                 }
 
