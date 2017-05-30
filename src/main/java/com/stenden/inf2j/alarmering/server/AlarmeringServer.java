@@ -2,7 +2,6 @@ package com.stenden.inf2j.alarmering.server;
 
 import com.google.inject.Injector;
 import com.stenden.inf2j.alarmering.server.http.AlertHandler;
-import com.stenden.inf2j.alarmering.server.http.DemoHandler;
 import com.stenden.inf2j.alarmering.server.http.HistoryHandler;
 import com.stenden.inf2j.alarmering.server.http.HomeHandler;
 import com.stenden.inf2j.alarmering.server.inject.GuiceHandlerFactory;
@@ -45,7 +44,10 @@ public final class AlarmeringServer {
                 .handlerFactory(this.injector.getInstance(GuiceHandlerFactory.class))
                 .router()
                     .GET(1000, "/api/geschiedenis/:id", HistoryHandler.class)
+                    .GET(1000, "/api/geschiedenis/:id/", HistoryHandler.class)
                     .GET(1000, "/api/locatie/:id", AlertHandler.class)
+                    .GET(1000, "/api/locatie/:id/", AlertHandler.class)
+                    .GET(1000, "/api/nieuws", HomeHandler.class)
                     .GET(1000, "/api/nieuws/", HomeHandler.class)
                 .end()
                 .start(this.config.getConfig("http-server"));

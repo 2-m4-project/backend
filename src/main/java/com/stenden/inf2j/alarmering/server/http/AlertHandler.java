@@ -23,12 +23,12 @@ public class AlertHandler implements RequestHandler<AlertRequest, JsonObject> {
 
 
 
-    private CompletableFuture<JsonObject> getRowFromDatabase(){
+    private CompletableFuture<JsonObject> getRowFromDatabase(int id){
         CompletableFuture<JsonObject> res = new CompletableFuture<>();
         this.executor.execute(() -> { // Onderstaande code asynchroon uitvoeren
             try(Connection conn = this.sqlProvider.getConnection()){ // Dit is een syntax trick om de verbinding automatisch terug naar de pool te geven als hij niet meer nodig is
-                PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM Geschiedenis WHERE Client_ID=? AND Melding != NULL");
-                pstmt.setInt(1, 1); // Hier waarde vanuit de GET in :id
+                PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM geschiedenis WHERE client_id=? AND melding IS NULL");
+                pstmt.setInt(1, id); // Hier waarde vanuit de GET in :id
 
                 Statement stmt = conn.createStatement();
 
@@ -38,9 +38,10 @@ public class AlertHandler implements RequestHandler<AlertRequest, JsonObject> {
                 ResultSet rs = pstmt.executeQuery();
                 while(rs.next()){ //Zolang er meer regels in het resultaat ding zitten
                     JsonObject row = new JsonObject();
-                    row.add("lat_long", rs.getString("Lat_Long"));
-                    row.add("Tijd", rs.getString("Tijd"));
-                    row.add("Melding", rs.getString("Melding"));
+                    row.add("lat", rs.getString("lat"));
+                    row.add("long", rs.getString("long"));
+                    row.add("tijd", rs.getString("tijd"));
+                    row.add("melding", rs.getString("melding"));
                     resArray.add(row);
                 }
 
@@ -60,6 +61,6 @@ public class AlertHandler implements RequestHandler<AlertRequest, JsonObject> {
 
     @Override
     public CompletableFuture<JsonObject> handle(RequestContext ctx, AlertRequest request) throws Exception {
-        return this.getRowFromDatabase();
+        return this.getRowFromDatabase(request.id());
     }
 }
