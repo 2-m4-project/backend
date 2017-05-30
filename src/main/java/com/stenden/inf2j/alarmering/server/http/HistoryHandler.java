@@ -30,7 +30,7 @@ public class HistoryHandler implements RequestHandler<HistoryRequest, JsonObject
         CompletableFuture<JsonObject> res = new CompletableFuture<>();
         this.executor.execute(() -> { // Onderstaande code asynchroon uitvoeren
             try(Connection conn = this.sqlProvider.getConnection()){ // Dit is een syntax trick om de verbinding automatisch terug naar de pool te geven als hij niet meer nodig is
-                PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM geschiedenis WHERE client_ID=? AND melding == NULL");
+                PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM geschiedenis WHERE client_id=? AND melding == NULL");
                 pstmt.setInt(1, id); // Hier waarde vanuit de GET in :id
 
                 Statement stmt = conn.createStatement();
