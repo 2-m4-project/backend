@@ -1,10 +1,12 @@
 package com.stenden.inf2j.alarmering.server;
 
 import com.google.inject.Injector;
+import com.stenden.inf2j.alarmering.server.http.AddHistoryHandler;
 import com.stenden.inf2j.alarmering.server.http.AlertHandler;
 import com.stenden.inf2j.alarmering.server.http.HistoryHandler;
 import com.stenden.inf2j.alarmering.server.http.HomeHandler;
 import com.stenden.inf2j.alarmering.server.inject.GuiceHandlerFactory;
+import com.stenden.inf2j.alarmering.server.response.JsonResponseConverter;
 import com.stenden.inf2j.alarmering.server.util.annotation.NonnullByDefault;
 import com.typesafe.config.Config;
 import io.netty.channel.EventLoopGroup;
@@ -41,10 +43,13 @@ public final class AlarmeringServer {
         HttpServerBuilder.create()
                 .eventLoop(this.masterGroup, this.childGroup)
                 .useEpoll(this.useEpoll)
+                .addResponseConverter(new JsonResponseConverter())
                 .handlerFactory(this.injector.getInstance(GuiceHandlerFactory.class))
                 .router()
                     .GET(1000, "/api/geschiedenis/:id", HistoryHandler.class)
                     .GET(1000, "/api/geschiedenis/:id/", HistoryHandler.class)
+                    .POST(1000, "/api/geschiedenis/:id", AddHistoryHandler.class)
+                    .POST(1000, "/api/geschiedenis/:id/", AddHistoryHandler.class)
                     .GET(1000, "/api/locatie/:id", AlertHandler.class)
                     .GET(1000, "/api/locatie/:id/", AlertHandler.class)
                     .GET(1000, "/api/nieuws", HomeHandler.class)

@@ -3,6 +3,8 @@ package com.stenden.inf2j.alarmering.server.inject;
 import com.google.inject.Binder;
 import com.google.inject.Module;
 import com.google.inject.name.Names;
+import com.stenden.inf2j.alarmering.server.history.HistoryService;
+import com.stenden.inf2j.alarmering.server.history.SqlHistoryService;
 import com.stenden.inf2j.alarmering.server.sql.SqlProvider;
 import com.stenden.inf2j.alarmering.server.util.annotation.NonnullByDefault;
 import com.typesafe.config.Config;
@@ -45,5 +47,6 @@ public class GuiceModule implements Module {
         binder.bind(boolean.class).annotatedWith(Names.named("UsingEpoll")).toInstance(usingEpoll);
         binder.bind(Config.class).toProvider(ConfigProvider.class);
         binder.bind(SqlProvider.class).to(HikariSqlProvider.class);
+        binder.bind(HistoryService.class).to(SqlHistoryService.class);
     }
 }
