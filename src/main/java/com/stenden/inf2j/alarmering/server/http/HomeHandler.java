@@ -4,6 +4,7 @@ import com.stenden.inf2j.alarmering.server.sql.SqlProvider;
 import com.stenden.inf2j.alarmering.server.util.annotation.NonnullByDefault;
 import nl.jk5.http2server.api.RequestContext;
 import nl.jk5.http2server.api.RequestHandler;
+import nl.jk5.http2server.api.annotation.Path;
 import nl.jk5.jsonlibrary.JsonArray;
 import nl.jk5.jsonlibrary.JsonObject;
 
