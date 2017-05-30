@@ -53,6 +53,7 @@ dependencies {
     compile 'nl.jk5.http2server:http2-server:1.8.7'
     compile 'nl.jk5.jsonlibrary:JsonLibrary:3.0.0'
     compile 'com.h2database:h2:1.4.195'
+    compile 'org.postgresql:postgresql:42.1.1.jre7'
 
     testCompile 'junit:junit:4.12'
 

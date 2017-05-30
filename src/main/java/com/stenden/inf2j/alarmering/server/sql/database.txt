@@ -30,7 +30,8 @@ CREATE TABLE BACKEND.Geschiedenis
 (
     ID INT AUTO_INCREMENT PRIMARY KEY,
     Client_ID INT,
-    Lat_Long VARCHAR(100),
+    Lat VARCHAR(100),
+    Long VARCHAR(100),
     Tijd DATE,
     Melding VARCHAR(255)
 );

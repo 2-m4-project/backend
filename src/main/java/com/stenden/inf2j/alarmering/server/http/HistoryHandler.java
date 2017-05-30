@@ -41,7 +41,8 @@ public class HistoryHandler implements RequestHandler<HistoryRequest, JsonObject
                 ResultSet rs = pstmt.executeQuery();
                 while(rs.next()){ //Zolang er meer regels in het resultaat ding zitten
                     JsonObject row = new JsonObject();
-                        row.add("lat_long", rs.getString("Lat_Long"));
+                        row.add("lat", rs.getString("Lat"));
+                        row.add("long", rs.getString("Long"));
                         row.add("Tijd", rs.getString("Tijd"));
                             resArray.add(row);
                 }
