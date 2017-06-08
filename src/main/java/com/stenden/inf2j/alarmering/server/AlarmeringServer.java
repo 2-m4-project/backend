@@ -7,6 +7,8 @@ import com.stenden.inf2j.alarmering.server.http.HistoryHandler;
 import com.stenden.inf2j.alarmering.server.http.HomeHandler;
 import com.stenden.inf2j.alarmering.server.inject.GuiceHandlerFactory;
 import com.stenden.inf2j.alarmering.server.response.JsonResponseConverter;
+import com.stenden.inf2j.alarmering.server.sql.migrator.Migration;
+import com.stenden.inf2j.alarmering.server.sql.migrator.Migrator;
 import com.stenden.inf2j.alarmering.server.util.annotation.NonnullByDefault;
 import com.typesafe.config.Config;
 import io.netty.channel.EventLoopGroup;
@@ -40,6 +42,10 @@ public final class AlarmeringServer {
     public void start(){
         logger.info("Starting alarmering server");
 
+        Migrator migrator = this.injector.getInstance(Migrator.class);
+        migrator.addMigration(Migration.create("create migration_log table", "create table migration_log(id serial not null constraint migration_log_pkey primary key,\nmigration_id varchar(255) not null,\nsql text not null,\nsuccess boolean not null, error text,\ntimestamp timestamp not null);"));
+        migrator.start();
+        
         HttpServerBuilder.create()
                 .eventLoop(this.masterGroup, this.childGroup)
                 .useEpoll(this.useEpoll)
