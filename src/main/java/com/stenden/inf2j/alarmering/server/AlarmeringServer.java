@@ -44,6 +44,19 @@ public final class AlarmeringServer {
 
         Migrator migrator = this.injector.getInstance(Migrator.class);
         migrator.addMigration(Migration.create("create migration_log table", "create table migration_log(id serial not null constraint migration_log_pkey primary key,\nmigration_id varchar(255) not null,\nsql text not null,\nsuccess boolean not null, error text,\ntimestamp timestamp not null);"));
+
+        if(this.config.hasPath("preload")){
+            for (String preloadClass : this.config.getStringList("preload")) {
+                try {
+                    logger.debug("Preloading class {}", preloadClass);
+                    Class<?> cl = Class.forName(preloadClass);
+                    this.injector.getInstance(cl);
+                } catch (ClassNotFoundException e) {
+                    logger.error("Class {} was not found. Not preloading it", preloadClass);
+                }
+            }
+        }
+
         migrator.start();
         
         HttpServerBuilder.create()

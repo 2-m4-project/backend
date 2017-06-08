@@ -2,11 +2,16 @@ package com.stenden.inf2j.alarmering.server.inject;
 
 import com.google.inject.Binder;
 import com.google.inject.Module;
+import com.google.inject.Scopes;
 import com.google.inject.name.Names;
+import com.stenden.inf2j.alarmering.api.auth.UserService;
 import com.stenden.inf2j.alarmering.api.history.HistoryService;
+import com.stenden.inf2j.alarmering.api.session.SessionStorage;
 import com.stenden.inf2j.alarmering.api.sql.SqlProvider;
 import com.stenden.inf2j.alarmering.api.util.annotation.NonnullByDefault;
+import com.stenden.inf2j.alarmering.server.auth.session.sql.SqlSessionStore;
 import com.stenden.inf2j.alarmering.server.history.SqlHistoryService;
+import com.stenden.inf2j.alarmering.server.inject.dynamic.UserServiceProvider;
 import com.typesafe.config.Config;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.epoll.Epoll;
@@ -48,5 +53,8 @@ public class GuiceModule implements Module {
         binder.bind(Config.class).toProvider(ConfigProvider.class);
         binder.bind(SqlProvider.class).to(HikariSqlProvider.class);
         binder.bind(HistoryService.class).to(SqlHistoryService.class);
+
+        binder.bind(UserService.class).toProvider(UserServiceProvider.class).in(Scopes.SINGLETON);
+        binder.bind(SessionStorage.class).to(SqlSessionStore.class).in(Scopes.SINGLETON);
     }
 }
