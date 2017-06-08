@@ -46,17 +46,15 @@ public final class AlarmeringServer {
                 .addResponseConverter(new JsonResponseConverter())
                 .handlerFactory(this.injector.getInstance(GuiceHandlerFactory.class))
                 .router()
-                    .GET(1000, "/api/geschiedenis/:id", HistoryHandler.class)
-                    .GET(1000, "/api/geschiedenis/:id/", HistoryHandler.class)
+                    .GET (1000, "/api/geschiedenis/:id", HistoryHandler.class)
+                    .GET (1000, "/api/geschiedenis/:id/", HistoryHandler.class)
                     .POST(1000, "/api/geschiedenis/:id", AddHistoryHandler.class)
                     .POST(1000, "/api/geschiedenis/:id/", AddHistoryHandler.class)
-                    .GET(1000, "/api/locatie/:id", AlertHandler.class)
-                    .GET(1000, "/api/locatie/:id/", AlertHandler.class)
-                    .GET(1000, "/api/nieuws", HomeHandler.class)
-                    .GET(1000, "/api/nieuws/", HomeHandler.class)
+                    .GET (1000, "/api/locatie/:id", AlertHandler.class)
+                    .GET (1000, "/api/locatie/:id/", AlertHandler.class)
+                    .GET (1000, "/api/nieuws", HomeHandler.class)
+                    .GET (1000, "/api/nieuws/", HomeHandler.class)
                 .end()
                 .start(this.config.getConfig("http-server"));
-
-        // Login en Register moeten nog
     }
 }
