@@ -1,5 +1,6 @@
-package com.stenden.inf2j.alarmering.server.http;
+package com.stenden.inf2j.alarmering.server.http.handler;
 
+import com.stenden.inf2j.alarmering.server.http.request.HomeRequest;
 import com.stenden.inf2j.alarmering.server.sql.SqlProvider;
 import com.stenden.inf2j.alarmering.server.util.annotation.NonnullByDefault;
 import nl.jk5.http2server.api.RequestContext;
@@ -13,7 +14,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
 @NonnullByDefault
-public class DemoHandler implements RequestHandler<DemoRequest, JsonObject> {
+public class HomeHandler implements RequestHandler<HomeRequest, JsonObject> {
 
     @Inject
     private SqlProvider sqlProvider;
@@ -21,31 +22,21 @@ public class DemoHandler implements RequestHandler<DemoRequest, JsonObject> {
     @Inject
     private Executor executor;
 
-    @Override
-    public CompletableFuture<JsonObject> handle(RequestContext ctx, DemoRequest request) throws Exception {
-        return this.getRowFromDatabase();
-
-        //return CompletableFuture.completedFuture(new JsonObject()
-        //        .add("success", true)
-        //        .add("naam", request.naam()));
-    }
-
     private CompletableFuture<JsonObject> getRowFromDatabase(){
         CompletableFuture<JsonObject> res = new CompletableFuture<>();
         this.executor.execute(() -> { // Onderstaande code asynchroon uitvoeren
             try(Connection conn = this.sqlProvider.getConnection()){ // Dit is een syntax trick om de verbinding automatisch terug naar de pool te geven als hij niet meer nodig is
-                PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM iets WHERE naam=?");
-                pstmt.setInt(1, 1);
-                pstmt.setString(1, "");
+                PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM nieuws ORDER BY id desc limit 6");
 
                 Statement stmt = conn.createStatement();
 
                 JsonArray resArray = new JsonArray(); //De json array met het resultaat
 
-                ResultSet rs = stmt.executeQuery("SELECT * FROM iets");
+                ResultSet rs = pstmt.executeQuery();
                 while(rs.next()){ //Zolang er meer regels in het resultaat ding zitten
                     JsonObject row = new JsonObject();
-                    row.add("name", rs.getString("name"));
+                    row.add("afbeelding", rs.getString("afbeelding"));
+                    row.add("text", rs.getString("text"));
                     resArray.add(row);
                 }
 
@@ -54,12 +45,17 @@ public class DemoHandler implements RequestHandler<DemoRequest, JsonObject> {
 
                 //Het resultaat in de future zetten
                 res.complete(new JsonObject().add("result", resArray));
-                
+
             } catch (SQLException e) {
                 //De foutmelding in de future zetten, zodat hij hogerop afgehandeld kan worden
                 res.completeExceptionally(e);
             }
         });
         return res; //Returnen van de future. Op dit moment is zijn waarde nog niks, maar dat zal hij ooit in de toekomst (future) wel worden
+    }
+
+    @Override
+    public CompletableFuture<JsonObject> handle(RequestContext ctx, HomeRequest request) throws Exception {
+        return this.getRowFromDatabase();
     }
 }

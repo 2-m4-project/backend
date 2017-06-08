@@ -1,4 +1,4 @@
-package com.stenden.inf2j.alarmering.server.http;
+package com.stenden.inf2j.alarmering.server.http.request;
 
 import com.stenden.inf2j.alarmering.server.util.annotation.NonnullByDefault;
 import nl.jk5.http2server.api.annotation.Path;

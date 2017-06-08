@@ -1,10 +1,10 @@
 package com.stenden.inf2j.alarmering.server;
 
 import com.google.inject.Injector;
-import com.stenden.inf2j.alarmering.server.http.AddHistoryHandler;
-import com.stenden.inf2j.alarmering.server.http.AlertHandler;
-import com.stenden.inf2j.alarmering.server.http.HistoryHandler;
-import com.stenden.inf2j.alarmering.server.http.HomeHandler;
+import com.stenden.inf2j.alarmering.server.http.handler.AddHistoryHandler;
+import com.stenden.inf2j.alarmering.server.http.handler.AlertHandler;
+import com.stenden.inf2j.alarmering.server.http.handler.HistoryHandler;
+import com.stenden.inf2j.alarmering.server.http.handler.HomeHandler;
 import com.stenden.inf2j.alarmering.server.inject.GuiceHandlerFactory;
 import com.stenden.inf2j.alarmering.server.response.JsonResponseConverter;
 import com.stenden.inf2j.alarmering.server.sql.migrator.Migration;
