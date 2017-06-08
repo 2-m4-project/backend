@@ -1,7 +1,9 @@
 package com.stenden.inf2j.alarmering.server.history;
 
 import com.google.common.collect.ImmutableList;
-import com.stenden.inf2j.alarmering.server.sql.SqlProvider;
+import com.stenden.inf2j.alarmering.api.history.HistoryElement;
+import com.stenden.inf2j.alarmering.api.history.HistoryService;
+import com.stenden.inf2j.alarmering.api.sql.SqlProvider;
 
 import javax.inject.Inject;
 import java.sql.*;

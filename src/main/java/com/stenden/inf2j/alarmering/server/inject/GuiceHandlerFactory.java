@@ -1,7 +1,7 @@
 package com.stenden.inf2j.alarmering.server.inject;
 
 import com.google.inject.Injector;
-import com.stenden.inf2j.alarmering.server.util.annotation.NonnullByDefault;
+import com.stenden.inf2j.alarmering.api.util.annotation.NonnullByDefault;
 import nl.jk5.http2server.api.HandlerFactory;
 import nl.jk5.http2server.api.RequestHandler;
 

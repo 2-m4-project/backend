@@ -1,4 +1,4 @@
-package com.stenden.inf2j.alarmering.server.util;
+package com.stenden.inf2j.alarmering.api.util;
 
 import nl.jk5.jsonlibrary.JsonElement;
 

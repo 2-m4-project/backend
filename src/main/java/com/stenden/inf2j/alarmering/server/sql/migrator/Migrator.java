@@ -1,7 +1,7 @@
 package com.stenden.inf2j.alarmering.server.sql.migrator;
 
 import com.google.common.collect.ImmutableList;
-import com.stenden.inf2j.alarmering.server.sql.SqlProvider;
+import com.stenden.inf2j.alarmering.api.sql.SqlProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

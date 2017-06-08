@@ -1,8 +1,8 @@
 package com.stenden.inf2j.alarmering.server.http.handler;
 
+import com.stenden.inf2j.alarmering.api.sql.SqlProvider;
+import com.stenden.inf2j.alarmering.api.util.annotation.NonnullByDefault;
 import com.stenden.inf2j.alarmering.server.http.request.AlertRequest;
-import com.stenden.inf2j.alarmering.server.sql.SqlProvider;
-import com.stenden.inf2j.alarmering.server.util.annotation.NonnullByDefault;
 import nl.jk5.http2server.api.RequestContext;
 import nl.jk5.http2server.api.RequestHandler;
 import nl.jk5.jsonlibrary.JsonArray;

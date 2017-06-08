@@ -1,6 +1,7 @@
 package com.stenden.inf2j.alarmering.server;
 
 import com.google.inject.Injector;
+import com.stenden.inf2j.alarmering.api.util.annotation.NonnullByDefault;
 import com.stenden.inf2j.alarmering.server.http.handler.AddHistoryHandler;
 import com.stenden.inf2j.alarmering.server.http.handler.AlertHandler;
 import com.stenden.inf2j.alarmering.server.http.handler.HistoryHandler;
@@ -9,7 +10,6 @@ import com.stenden.inf2j.alarmering.server.inject.GuiceHandlerFactory;
 import com.stenden.inf2j.alarmering.server.response.JsonResponseConverter;
 import com.stenden.inf2j.alarmering.server.sql.migrator.Migration;
 import com.stenden.inf2j.alarmering.server.sql.migrator.Migrator;
-import com.stenden.inf2j.alarmering.server.util.annotation.NonnullByDefault;
 import com.typesafe.config.Config;
 import io.netty.channel.EventLoopGroup;
 import nl.jk5.http2server.routing.HttpServerBuilder;

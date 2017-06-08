@@ -1,4 +1,4 @@
-package com.stenden.inf2j.alarmering.server.history;
+package com.stenden.inf2j.alarmering.api.history;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;

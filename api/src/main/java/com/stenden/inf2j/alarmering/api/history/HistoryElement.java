@@ -1,7 +1,7 @@
-package com.stenden.inf2j.alarmering.server.history;
+package com.stenden.inf2j.alarmering.api.history;
 
 import com.google.common.base.MoreObjects;
-import com.stenden.inf2j.alarmering.server.util.JsonConvertible;
+import com.stenden.inf2j.alarmering.api.util.JsonConvertible;
 import nl.jk5.jsonlibrary.JsonElement;
 import nl.jk5.jsonlibrary.JsonObject;
 

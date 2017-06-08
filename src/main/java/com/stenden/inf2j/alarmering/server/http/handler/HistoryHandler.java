@@ -1,9 +1,9 @@
 package com.stenden.inf2j.alarmering.server.http.handler;
 
-import com.stenden.inf2j.alarmering.server.history.HistoryService;
+import com.stenden.inf2j.alarmering.api.history.HistoryService;
+import com.stenden.inf2j.alarmering.api.util.JsonConvertible;
+import com.stenden.inf2j.alarmering.api.util.annotation.NonnullByDefault;
 import com.stenden.inf2j.alarmering.server.http.request.HistoryRequest;
-import com.stenden.inf2j.alarmering.server.util.JsonConvertible;
-import com.stenden.inf2j.alarmering.server.util.annotation.NonnullByDefault;
 import nl.jk5.http2server.api.RequestContext;
 import nl.jk5.http2server.api.RequestHandler;
 import nl.jk5.jsonlibrary.JsonCollectors;

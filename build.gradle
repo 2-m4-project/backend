@@ -1,6 +1,5 @@
 apply plugin: "java"
 
-group = "com.stenden.inf2j.alarmering"
 version = "0.1.0-SNAPSHOT"
 
 repositories {
@@ -57,7 +56,34 @@ dependencies {
 
     testCompile 'junit:junit:4.12'
 
+    compile project(":api")
+
     alpnJar 'org.mortbay.jetty.alpn:alpn-boot:8.1.11.v20170118'
+}
+
+subprojects {
+    apply plugin: 'java'
+}
+
+allprojects {
+    group = "com.stenden.inf2j.alarmering"
+
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        maven {
+            name = 'sonatype-snapshots'
+            url = 'https://oss.sonatype.org/content/repositories/snapshots'
+        }
+        maven {
+            name = 'jk-5'
+            url = 'http://maven.jk-5.nl'
+        }
+        maven {
+            name 'sponge'
+            url 'http://repo.spongepowered.org/maven'
+        }
+    }
 }
 
 println(configurations.alpnJar.resolve().first())

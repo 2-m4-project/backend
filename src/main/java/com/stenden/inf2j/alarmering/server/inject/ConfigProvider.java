@@ -1,6 +1,6 @@
 package com.stenden.inf2j.alarmering.server.inject;
 
-import com.stenden.inf2j.alarmering.server.util.annotation.NonnullByDefault;
+import com.stenden.inf2j.alarmering.api.util.annotation.NonnullByDefault;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import org.slf4j.Logger;

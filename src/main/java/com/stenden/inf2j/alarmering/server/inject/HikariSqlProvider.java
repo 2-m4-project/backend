@@ -1,8 +1,8 @@
 package com.stenden.inf2j.alarmering.server.inject;
 
 import com.google.inject.Inject;
-import com.stenden.inf2j.alarmering.server.sql.SqlProvider;
-import com.stenden.inf2j.alarmering.server.util.annotation.NonnullByDefault;
+import com.stenden.inf2j.alarmering.api.sql.SqlProvider;
+import com.stenden.inf2j.alarmering.api.util.annotation.NonnullByDefault;
 import com.typesafe.config.Config;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;

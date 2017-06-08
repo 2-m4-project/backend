@@ -1,6 +1,6 @@
 package com.stenden.inf2j.alarmering.server.inject;
 
-import com.stenden.inf2j.alarmering.server.util.annotation.NonnullByDefault;
+import com.stenden.inf2j.alarmering.api.util.annotation.NonnullByDefault;
 import io.netty.channel.EventLoopGroup;
 
 import javax.inject.Inject;

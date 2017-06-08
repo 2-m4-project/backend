@@ -1,4 +1,4 @@
-package com.stenden.inf2j.alarmering.server.util.annotation;
+package com.stenden.inf2j.alarmering.api.util.annotation;
 
 import javax.annotation.Nonnull;
 import javax.annotation.meta.TypeQualifierDefault;
