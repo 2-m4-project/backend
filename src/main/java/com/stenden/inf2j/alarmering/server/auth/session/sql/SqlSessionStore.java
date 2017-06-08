@@ -42,7 +42,7 @@ public class SqlSessionStore implements SessionStorage {
 
     @Override
     public CompletableFuture<Session> getSession(RequestContext ctx) {
-        Optional<String> cookie = ctx.request().cookie("reverb-session")
+        Optional<String> cookie = ctx.request().cookie("alarmering-session")
                 .flatMap(SerializationUtils::bytesFromUrlSafeBase64)
                 .flatMap(i -> cryptUtils.decrypt(i, "tjCt16rEszOVodrpCvZSL3cmdQ2FS66FErHGtm03JxVAvt2eE8GMjLWNXkI5kPJy7T0QvuaB4eWWSu9ycqGL8tPCeqLog9dxyQ2O")) //TODO: make this encryption key configurable
                 .map(GzipUtils::mayUncompress)
@@ -119,7 +119,7 @@ public class SqlSessionStore implements SessionStorage {
                     Session session = new SqlSession(rs.getString("session_key"), rs.getBoolean("authenticated"), rs.getTimestamp("last_seen").toInstant(), null, "", remoteIp);
 
                     String cookieValue = this.encryptSessionCookie(session.getSessionKey());
-                    Cookie cookie = new DefaultCookie("reverb-session", cookieValue);
+                    Cookie cookie = new DefaultCookie("alarmering-session", cookieValue);
                     cookie.setSecure(true);
                     cookie.setHttpOnly(true);
                     cookie.setMaxAge(60 * 60 * 24 * 365 * 5);
@@ -280,8 +280,9 @@ public class SqlSessionStore implements SessionStorage {
                 csrfCookie.setPath("/");
                 ctx.responseHeaders().add(HttpHeaderNames.SET_COOKIE, ServerCookieEncoder.STRICT.encode(csrfCookie) + "; SameSite=strict");
 
+                promise.complete(null);
             } catch (SQLException e) {
-                e.printStackTrace();
+                promise.completeExceptionally(e);
             }
         });
         return promise;

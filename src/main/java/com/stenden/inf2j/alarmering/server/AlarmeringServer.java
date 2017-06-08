@@ -1,11 +1,15 @@
 package com.stenden.inf2j.alarmering.server;
 
 import com.google.inject.Injector;
+import com.stenden.inf2j.alarmering.api.auth.UserService;
 import com.stenden.inf2j.alarmering.api.util.annotation.NonnullByDefault;
 import com.stenden.inf2j.alarmering.server.http.handler.AddHistoryHandler;
 import com.stenden.inf2j.alarmering.server.http.handler.AlertHandler;
 import com.stenden.inf2j.alarmering.server.http.handler.HistoryHandler;
 import com.stenden.inf2j.alarmering.server.http.handler.HomeHandler;
+import com.stenden.inf2j.alarmering.server.http.handler.session.CreateSessionHandler;
+import com.stenden.inf2j.alarmering.server.http.handler.session.LogoutHandler;
+import com.stenden.inf2j.alarmering.server.http.handler.session.WhoAmIHandler;
 import com.stenden.inf2j.alarmering.server.inject.GuiceHandlerFactory;
 import com.stenden.inf2j.alarmering.server.response.JsonResponseConverter;
 import com.stenden.inf2j.alarmering.server.sql.migrator.Migration;
@@ -29,14 +33,16 @@ public final class AlarmeringServer {
     private final EventLoopGroup masterGroup;
     private final EventLoopGroup childGroup;
     private final boolean useEpoll;
+    private final UserService userService;
 
     @Inject
-    public AlarmeringServer(Injector injector, Config config, @Named("Master") EventLoopGroup masterGroup, @Named("Child") EventLoopGroup childGroup, @Named("UsingEpoll") boolean useEpoll) {
+    public AlarmeringServer(Injector injector, Config config, @Named("Master") EventLoopGroup masterGroup, @Named("Child") EventLoopGroup childGroup, @Named("UsingEpoll") boolean useEpoll, UserService userService) {
         this.config = config;
         this.injector = injector;
         this.masterGroup = masterGroup;
         this.childGroup = childGroup;
         this.useEpoll = useEpoll;
+        this.userService = userService;
     }
 
     public void start(){
@@ -58,6 +64,10 @@ public final class AlarmeringServer {
         }
 
         migrator.start();
+
+        try {
+            this.userService.refreshDirectories().get();
+        } catch (Exception ignored) {}
         
         HttpServerBuilder.create()
                 .eventLoop(this.masterGroup, this.childGroup)
@@ -65,14 +75,17 @@ public final class AlarmeringServer {
                 .addResponseConverter(new JsonResponseConverter())
                 .handlerFactory(this.injector.getInstance(GuiceHandlerFactory.class))
                 .router()
-                    .GET (1000, "/api/geschiedenis/:id", HistoryHandler.class)
-                    .GET (1000, "/api/geschiedenis/:id/", HistoryHandler.class)
-                    .POST(1000, "/api/geschiedenis/:id", AddHistoryHandler.class)
-                    .POST(1000, "/api/geschiedenis/:id/", AddHistoryHandler.class)
-                    .GET (1000, "/api/locatie/:id", AlertHandler.class)
-                    .GET (1000, "/api/locatie/:id/", AlertHandler.class)
-                    .GET (1000, "/api/nieuws", HomeHandler.class)
-                    .GET (1000, "/api/nieuws/", HomeHandler.class)
+                    .GET   (1000, "/api/geschiedenis/:id", HistoryHandler.class)
+                    .GET   (1000, "/api/geschiedenis/:id/", HistoryHandler.class)
+                    .POST  (1000, "/api/geschiedenis/:id", AddHistoryHandler.class)
+                    .POST  (1000, "/api/geschiedenis/:id/", AddHistoryHandler.class)
+                    .GET   (1000, "/api/locatie/:id", AlertHandler.class)
+                    .GET   (1000, "/api/locatie/:id/", AlertHandler.class)
+                    .GET   (1000, "/api/nieuws", HomeHandler.class)
+                    .GET   (1000, "/api/nieuws/", HomeHandler.class)
+                    .POST  (1000, "/api/session", CreateSessionHandler.class)
+                    .DELETE(1000, "/api/session", LogoutHandler.class)
+                    .GET   (1000, "/api/session/whoami", WhoAmIHandler.class)
                 .end()
                 .start(this.config.getConfig("http-server"));
     }

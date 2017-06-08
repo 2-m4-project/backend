@@ -97,7 +97,7 @@ public class Migrator {
                     logger.error("Error in database migration step " + migration.getId(), e);
                 }
 
-                PreparedStatement stmt = conn.prepareStatement("INSERT INTO reverb.public.migration_log(migration_id, sql, success, error, timestamp) VALUES (?, ?, ?, ?, ?)");
+                PreparedStatement stmt = conn.prepareStatement("INSERT INTO migration_log(migration_id, sql, success, error, timestamp) VALUES (?, ?, ?, ?, ?)");
                 stmt.setString(1, log.getMigrationId());
                 stmt.setString(2, log.getSql());
                 stmt.setBoolean(3, log.isSuccess());

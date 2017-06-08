@@ -36,12 +36,11 @@ public class SqlUserService implements UserService {
         this.sqlProvider = sqlProvider;
         this.executor = executor;
 
-        migrator.addMigration(Migration.create("create users schema", "CREATE SCHEMA IF NOT EXISTS users;"));
-        migrator.addMigration(Migration.create("create user directories table v1", "CREATE TABLE users.directories(id SERIAL NOT NULL, type VARCHAR NOT NULL, name VARCHAR NOT NULL, priority INT NOT NULL, settings TEXT);"));
-        migrator.addMigration(Migration.create("create user directories table id primary key", "ALTER TABLE users.directories ADD CONSTRAINT directories_id_pk PRIMARY KEY (id);"));
-        migrator.addMigration(Migration.create("create user storage table v1", "CREATE TABLE users.\"user\"(id SERIAL NOT NULL CONSTRAINT user_id_pk PRIMARY KEY,username VARCHAR(255) NOT NULL,firstname VARCHAR(255) NOT NULL,lastname VARCHAR(255) NOT NULL,displayname VARCHAR(255) NOT NULL,email VARCHAR(255) NOT NULL,soundcloud_token VARCHAR(64),directory_id INT NOT NULL);"));
-        migrator.addMigration(Migration.create("add user storage to directory foreign key", "ALTER TABLE users.\"user\" ADD CONSTRAINT user_directories_id_fk FOREIGN KEY (directory_id) REFERENCES users.directories (id);"));
-        migrator.addMigration(Migration.create("add directory_uuid field to users table", "ALTER TABLE users.\"user\" ADD directory_uuid VARCHAR NULL;"));
+        migrator.addMigration(Migration.create("create user_directories table v1", "CREATE TABLE user_directories(id SERIAL NOT NULL, type VARCHAR NOT NULL, name VARCHAR NOT NULL, priority INT NOT NULL, settings TEXT);"));
+        migrator.addMigration(Migration.create("create user_directories table id primary key", "ALTER TABLE user_directories ADD CONSTRAINT user_directories_id_pk PRIMARY KEY (id);"));
+        migrator.addMigration(Migration.create("create user storage table v1", "CREATE TABLE \"user\"(id SERIAL NOT NULL CONSTRAINT user_id_pk PRIMARY KEY,username VARCHAR(255) NOT NULL,firstname VARCHAR(255) NOT NULL,lastname VARCHAR(255) NOT NULL,displayname VARCHAR(255) NOT NULL,email VARCHAR(255) NOT NULL,directory_id INT NOT NULL);"));
+        migrator.addMigration(Migration.create("add user storage to directory foreign key", "ALTER TABLE \"user\" ADD CONSTRAINT user_directories_id_fk FOREIGN KEY (directory_id) REFERENCES user_directories (id);"));
+        migrator.addMigration(Migration.create("add directory_uuid field to users table", "ALTER TABLE \"user\" ADD directory_uuid VARCHAR NULL;"));
     }
 
     @Override
@@ -71,7 +70,7 @@ public class SqlUserService implements UserService {
         this.executor.execute(() -> {
             try(Connection conn = this.sqlProvider.getConnection()){
                 Statement stmt = conn.createStatement();
-                ResultSet rs = stmt.executeQuery("SELECT * FROM users.directories");
+                ResultSet rs = stmt.executeQuery("SELECT * FROM user_directories");
 
                 ImmutableSortedSet.Builder<UserDirectoryContainer> setBuilder = ImmutableSortedSet.naturalOrder();
                 while(rs.next()){
@@ -125,7 +124,7 @@ public class SqlUserService implements UserService {
         CompletableFuture<Void> promise = new CompletableFuture<>();
         this.executor.execute(() -> {
             try(Connection conn = this.sqlProvider.getConnection()){
-                PreparedStatement stmt = conn.prepareStatement("INSERT INTO users.directories(\"type\", \"name\", priority, settings) VALUES (?, ?, ?, ?) RETURNING id");
+                PreparedStatement stmt = conn.prepareStatement("INSERT INTO user_directories(\"type\", \"name\", priority, settings) VALUES (?, ?, ?, ?) RETURNING id");
                 stmt.setString(1, directory.getType().name());
                 stmt.setString(2, directory.getName());
                 stmt.setInt(3, priority);
@@ -154,7 +153,7 @@ public class SqlUserService implements UserService {
         CompletableFuture<AuthenticationResult<User>> promise = new CompletableFuture<>();
         this.executor.execute(() -> {
             try(Connection conn = this.sqlProvider.getConnection()){
-                PreparedStatement stmt = conn.prepareStatement("SELECT id, directory_id FROM users.\"user\" WHERE username=?");
+                PreparedStatement stmt = conn.prepareStatement("SELECT id, directory_id FROM \"user\" WHERE username=?");
                 stmt.setString(1, username);
 
                 ResultSet rs = stmt.executeQuery();
@@ -226,7 +225,7 @@ public class SqlUserService implements UserService {
         CompletableFuture<Optional<User>> promise = new CompletableFuture<>();
         this.executor.execute(() -> {
             try(Connection conn = this.sqlProvider.getConnection()){
-                PreparedStatement stmt = conn.prepareStatement("SELECT * FROM users.\"user\" WHERE id=?");
+                PreparedStatement stmt = conn.prepareStatement("SELECT * FROM \"user\" WHERE id=?");
                 stmt.setInt(1, id);
 
                 ResultSet rs = stmt.executeQuery();

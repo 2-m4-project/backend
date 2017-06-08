@@ -53,8 +53,10 @@ dependencies {
     compile 'nl.jk5.jsonlibrary:JsonLibrary:3.0.0'
     compile 'com.h2database:h2:1.4.195'
     compile 'org.postgresql:postgresql:42.1.1.jre7'
+    compile "com.lambdaworks:scrypt:1.4.0"
 
     testCompile 'junit:junit:4.12'
+    testCompile 'org.mockito:mockito-core:2.8.9'
 
     compile project(":api")
 
