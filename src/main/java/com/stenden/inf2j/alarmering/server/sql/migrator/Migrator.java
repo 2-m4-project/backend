@@ -34,9 +34,9 @@ public class Migrator {
     public List<MigrationLog> getMigrationLog(){
         try(Connection conn = this.sqlProvider.getConnection()){
             Statement existsStatement = conn.createStatement();
-            ResultSet existsRs = existsStatement.executeQuery("SELECT EXISTS(SELECT * FROM information_schema.tables WHERE table_schema='public' AND table_name='migration_log')");
+            ResultSet existsRs = existsStatement.executeQuery("SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='alarmering' AND table_name='migration_log'");
             existsRs.next();
-            if (!existsRs.getBoolean(1)) {
+            if (existsRs.getInt(1) == 0) {
                 existsRs.close();
                 existsStatement.close();
                 return Collections.emptyList();
@@ -53,7 +53,7 @@ public class Migrator {
                 int id = rs.getInt("id");
                 String migrationId = rs.getString("migration_id");
                 String sql = rs.getString("sql");
-                boolean success = rs.getBoolean("success");
+                boolean success = rs.getInt("success") == 1;
                 String error = rs.getString("error");
                 Instant timestamp = rs.getTimestamp("timestamp").toInstant();
 
@@ -75,11 +75,13 @@ public class Migrator {
             conn.setAutoCommit(false);
             for (Migration migration : this.migrations) {
                 Optional<MigrationLog> logOpt = migrationLog.stream().filter(l -> l.getMigrationId().equals(migration.getId())).findFirst();
+                boolean exists = false;
                 if(logOpt.isPresent()){
                     if(logOpt.get().isSuccess()){
                         logger.debug("Skipping migration {}, already executed", logOpt.get().getMigrationId());
                         continue;
                     }
+                    exists = true;
                 }
 
                 MigrationLog log = new MigrationLog(-1, migration.getId(), migration.getSql(), false, null, Instant.now());
@@ -97,14 +99,25 @@ public class Migrator {
                     logger.error("Error in database migration step " + migration.getId(), e);
                 }
 
-                PreparedStatement stmt = conn.prepareStatement("INSERT INTO migration_log(migration_id, sql, success, error, timestamp) VALUES (?, ?, ?, ?, ?)");
-                stmt.setString(1, log.getMigrationId());
-                stmt.setString(2, log.getSql());
-                stmt.setBoolean(3, log.isSuccess());
-                stmt.setString(4, log.getError());
-                stmt.setTimestamp(5, Timestamp.from(log.getTimestamp()));
+                PreparedStatement stmt;
 
-                stmt.executeUpdate();
+                if(exists){
+                    stmt = conn.prepareStatement("UPDATE migration_log SET `sql`=?, `success`=?, `error`=?, `timestamp`=? WHERE migration_id=?");
+                    stmt.setString(1, log.getSql());
+                    stmt.setBoolean(2, log.isSuccess());
+                    stmt.setString(3, log.getError());
+                    stmt.setTimestamp(4, Timestamp.from(log.getTimestamp()));
+                    stmt.setString(5, log.getMigrationId());
+                }else{
+                    stmt = conn.prepareStatement("INSERT INTO migration_log(migration_id, `sql`, `success`, `error`, `timestamp`) VALUES (?, ?, ?, ?, ?)");
+                    stmt.setString(1, log.getMigrationId());
+                    stmt.setString(2, log.getSql());
+                    stmt.setBoolean(3, log.isSuccess());
+                    stmt.setString(4, log.getError());
+                    stmt.setTimestamp(5, Timestamp.from(log.getTimestamp()));
+                }
+
+                stmt.execute();
                 conn.commit();
             }
             conn.setAutoCommit(true);

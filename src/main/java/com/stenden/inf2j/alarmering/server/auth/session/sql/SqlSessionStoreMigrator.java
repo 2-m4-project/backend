@@ -9,6 +9,6 @@ public class SqlSessionStoreMigrator {
 
     @Inject
     public SqlSessionStoreMigrator(Migrator migrator) {
-        migrator.addMigration(Migration.create("create sessions table v1", "CREATE TABLE sessions(session_key CHAR(64) NOT NULL CONSTRAINT sessions_pkey PRIMARY KEY, user_id INTEGER CONSTRAINT sessions_user_id_fk REFERENCES \"user\", authenticated BOOLEAN DEFAULT FALSE NOT NULL, last_seen TIMESTAMP DEFAULT now() NOT NULL, csrf_token CHAR(32) NOT NULL, ip VARCHAR(46) NOT NULL);"));
+        migrator.addMigration(Migration.create("create sessions table v1", "CREATE TABLE alarmering.table_name (session_key CHAR(64) PRIMARY KEY NOT NULL, user_id INT NOT NULL, authenticated BOOL DEFAULT FALSE NOT NULL, last_seen TIMESTAMP DEFAULT NOW() NOT NULL, csrf_token CHAR(32) NOT NULL, ip VARCHAR(46) NOT NULL, CONSTRAINT table_name_user_id_fk FOREIGN KEY (user_id) REFERENCES user (id));"));
     }
 }

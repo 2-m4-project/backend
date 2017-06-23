@@ -51,8 +51,7 @@ dependencies {
     compile 'com.google.code.findbugs:jsr305:3.0.1'
     compile 'nl.jk5.http2server:http2-server:1.8.7'
     compile 'nl.jk5.jsonlibrary:JsonLibrary:3.0.0'
-    compile 'com.h2database:h2:1.4.195'
-    compile 'org.postgresql:postgresql:42.1.1.jre7'
+    compile 'mysql:mysql-connector-java:6.0.6'
     compile "com.lambdaworks:scrypt:1.4.0"
 
     testCompile 'junit:junit:4.12'

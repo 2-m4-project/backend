@@ -36,11 +36,10 @@ public class SqlUserService implements UserService {
         this.sqlProvider = sqlProvider;
         this.executor = executor;
 
-        migrator.addMigration(Migration.create("create user_directories table v1", "CREATE TABLE user_directories(id SERIAL NOT NULL, type VARCHAR NOT NULL, name VARCHAR NOT NULL, priority INT NOT NULL, settings TEXT);"));
-        migrator.addMigration(Migration.create("create user_directories table id primary key", "ALTER TABLE user_directories ADD CONSTRAINT user_directories_id_pk PRIMARY KEY (id);"));
-        migrator.addMigration(Migration.create("create user storage table v1", "CREATE TABLE \"user\"(id SERIAL NOT NULL CONSTRAINT user_id_pk PRIMARY KEY,username VARCHAR(255) NOT NULL,firstname VARCHAR(255) NOT NULL,lastname VARCHAR(255) NOT NULL,displayname VARCHAR(255) NOT NULL,email VARCHAR(255) NOT NULL,directory_id INT NOT NULL);"));
-        migrator.addMigration(Migration.create("add user storage to directory foreign key", "ALTER TABLE \"user\" ADD CONSTRAINT user_directories_id_fk FOREIGN KEY (directory_id) REFERENCES user_directories (id);"));
-        migrator.addMigration(Migration.create("add directory_uuid field to users table", "ALTER TABLE \"user\" ADD directory_uuid VARCHAR NULL;"));
+        migrator.addMigration(Migration.create("create user_directories table v1", "CREATE TABLE user_directories(id INT AUTO_INCREMENT PRIMARY KEY, type VARCHAR(255) NOT NULL, name VARCHAR(255) NOT NULL, priority INT NOT NULL, settings TEXT);"));
+        migrator.addMigration(Migration.create("create user storage table v1", "CREATE TABLE `user`(id INT AUTO_INCREMENT PRIMARY KEY,username VARCHAR(255) NOT NULL,firstname VARCHAR(255) NOT NULL,lastname VARCHAR(255) NOT NULL,displayname VARCHAR(255) NOT NULL,email VARCHAR(255) NOT NULL,directory_id INT NOT NULL);"));
+        migrator.addMigration(Migration.create("add user storage to directory foreign key", "ALTER TABLE `user` ADD CONSTRAINT user_directories_id_fk FOREIGN KEY (directory_id) REFERENCES user_directories (id);"));
+        migrator.addMigration(Migration.create("add directory_uuid field to users table", "ALTER TABLE `user` ADD directory_uuid VARCHAR(255) NULL;"));
     }
 
     @Override

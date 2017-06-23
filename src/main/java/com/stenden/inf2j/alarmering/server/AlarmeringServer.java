@@ -12,7 +12,6 @@ import com.stenden.inf2j.alarmering.server.http.handler.session.LogoutHandler;
 import com.stenden.inf2j.alarmering.server.http.handler.session.WhoAmIHandler;
 import com.stenden.inf2j.alarmering.server.inject.GuiceHandlerFactory;
 import com.stenden.inf2j.alarmering.server.response.JsonResponseConverter;
-import com.stenden.inf2j.alarmering.server.sql.migrator.Migration;
 import com.stenden.inf2j.alarmering.server.sql.migrator.Migrator;
 import com.typesafe.config.Config;
 import io.netty.channel.EventLoopGroup;
@@ -36,7 +35,7 @@ public final class AlarmeringServer {
     private final UserService userService;
 
     @Inject
-    public AlarmeringServer(Injector injector, Config config, @Named("Master") EventLoopGroup masterGroup, @Named("Child") EventLoopGroup childGroup, @Named("UsingEpoll") boolean useEpoll, UserService userService) {
+    public AlarmeringServer(Injector injector, Config config, @Named("Master") EventLoopGroup masterGroup, @Named("Child") EventLoopGroup childGroup, @Named("UsingEpoll") boolean useEpoll, UserService userService, Migrator migrator) {
         this.config = config;
         this.injector = injector;
         this.masterGroup = masterGroup;
@@ -47,9 +46,6 @@ public final class AlarmeringServer {
 
     public void start(){
         logger.info("Starting alarmering server");
-
-        Migrator migrator = this.injector.getInstance(Migrator.class);
-        migrator.addMigration(Migration.create("create migration_log table", "create table migration_log(id serial not null constraint migration_log_pkey primary key,\nmigration_id varchar(255) not null,\nsql text not null,\nsuccess boolean not null, error text,\ntimestamp timestamp not null);"));
 
         if(this.config.hasPath("preload")){
             for (String preloadClass : this.config.getStringList("preload")) {
@@ -62,7 +58,8 @@ public final class AlarmeringServer {
                 }
             }
         }
-
+        
+        Migrator migrator = this.injector.getInstance(Migrator.class);
         migrator.start();
 
         try {
