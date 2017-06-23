@@ -12,6 +12,7 @@ import com.stenden.inf2j.alarmering.server.http.handler.session.LogoutHandler;
 import com.stenden.inf2j.alarmering.server.http.handler.session.WhoAmIHandler;
 import com.stenden.inf2j.alarmering.server.inject.GuiceHandlerFactory;
 import com.stenden.inf2j.alarmering.server.response.JsonResponseConverter;
+import com.stenden.inf2j.alarmering.server.sql.migrator.Migration;
 import com.stenden.inf2j.alarmering.server.sql.migrator.Migrator;
 import com.typesafe.config.Config;
 import io.netty.channel.EventLoopGroup;
@@ -60,6 +61,7 @@ public final class AlarmeringServer {
         }
         
         Migrator migrator = this.injector.getInstance(Migrator.class);
+        migrator.addMigration(Migration.create("create homepage_news table", "CREATE TABLE alarmering.homepage_news(id INT PRIMARY KEY NOT NULL AUTO_INCREMENT, image VARCHAR(512) NOT NULL, text LONGTEXT NOT NULL);"));
         migrator.start();
 
         try {

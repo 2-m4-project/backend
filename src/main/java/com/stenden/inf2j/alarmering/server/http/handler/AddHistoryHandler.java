@@ -32,7 +32,7 @@ public class AddHistoryHandler implements RequestHandler<AddHistoryRequest, Json
         this.executor.execute(() -> { // Onderstaande code asynchroon uitvoeren
             try(Connection conn = this.sqlProvider.getConnection()){ // Dit is een syntax trick om de verbinding automatisch terug naar de pool te geven als hij niet meer nodig is
                 logger.debug("Adding history: {}, {}, {}, {}", client_id, lat_pos, long_pos, melding);
-                PreparedStatement pstmt = conn.prepareStatement("INSERT INTO geschiedenis (client_id, lat, long, tijd, melding) VALUES (?,?,?,NOW(), ?)");
+                PreparedStatement pstmt = conn.prepareStatement("INSERT INTO history (client_id, lat, `long`, time, message) VALUES (?,?,?,NOW(), ?)");
                 pstmt.setInt(1, client_id);
                 pstmt.setFloat(2, lat_pos);
                 pstmt.setFloat(3, long_pos);

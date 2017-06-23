@@ -6,16 +6,34 @@ import nl.jk5.jsonlibrary.JsonObject;
 
 public interface User extends JsonConvertible {
 
+    /**
+     * @return The id of the user represented
+     */
     int id();
 
+    /**
+     * @return The username of the user
+     */
     String username();
 
+    /**
+     * @return The first name of the user
+     */
     String firstName();
-    
+
+    /**
+     * @return The last name of the user
+     */
     String lastName();
 
+    /**
+     * @return The display name of the user
+     */
     String displayName();
 
+    /**
+     * @return The email address of the user
+     */
     String email();
 
     @Override

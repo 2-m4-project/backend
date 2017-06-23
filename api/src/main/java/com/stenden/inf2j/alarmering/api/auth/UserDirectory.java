@@ -19,9 +19,27 @@ public interface UserDirectory {
      */
     String getName();
 
+    /**
+     * @return The settings of this directory
+     */
     JsonObject getSettings();
 
+    /**
+     * Create a new user
+     * @param username The username for this user
+     * @param firstname The first name of this user
+     * @param lastname The last name of the new user
+     * @param displayname The display name of the new user
+     * @param email The email address of the new user
+     * @return A future of the newly created user
+     */
     CompletableFuture<DirectoryUser> createUser(String username, String firstname, String lastname, String displayname, String email);
 
+    /**
+     * Performs an authenticatoin attempt for a user
+     * @param username The username to log in
+     * @param password The password to use when logging in
+     * @return The authentication result
+     */
     CompletableFuture<AuthenticationResult<DirectoryUser>> authenticate(String username, String password);
 }

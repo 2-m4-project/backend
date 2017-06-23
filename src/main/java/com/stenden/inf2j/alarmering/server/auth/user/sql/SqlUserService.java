@@ -123,7 +123,7 @@ public class SqlUserService implements UserService {
         CompletableFuture<Void> promise = new CompletableFuture<>();
         this.executor.execute(() -> {
             try(Connection conn = this.sqlProvider.getConnection()){
-                PreparedStatement stmt = conn.prepareStatement("INSERT INTO user_directories(\"type\", \"name\", priority, settings) VALUES (?, ?, ?, ?) RETURNING id");
+                PreparedStatement stmt = conn.prepareStatement("INSERT INTO user_directories(`type`, `name`, priority, settings) VALUES (?, ?, ?, ?)");
                 stmt.setString(1, directory.getType().name());
                 stmt.setString(2, directory.getName());
                 stmt.setInt(3, priority);
@@ -132,10 +132,12 @@ public class SqlUserService implements UserService {
                 }else{
                     stmt.setString(4, directory.getSettings().toString());
                 }
+                stmt.execute();
 
-                ResultSet rs = stmt.executeQuery();
+                Statement idStmt = conn.createStatement();
+                ResultSet rs = idStmt.executeQuery("SELECT LAST_INSERT_ID();");
                 rs.next();
-                int id = rs.getInt("id");
+                int id = rs.getInt(1);
 
                 this.directoryContainers.add(new UserDirectoryContainer(id, priority, directory));
 
@@ -152,7 +154,7 @@ public class SqlUserService implements UserService {
         CompletableFuture<AuthenticationResult<User>> promise = new CompletableFuture<>();
         this.executor.execute(() -> {
             try(Connection conn = this.sqlProvider.getConnection()){
-                PreparedStatement stmt = conn.prepareStatement("SELECT id, directory_id FROM \"user\" WHERE username=?");
+                PreparedStatement stmt = conn.prepareStatement("SELECT id, directory_id FROM `user` WHERE username=?");
                 stmt.setString(1, username);
 
                 ResultSet rs = stmt.executeQuery();
@@ -224,7 +226,7 @@ public class SqlUserService implements UserService {
         CompletableFuture<Optional<User>> promise = new CompletableFuture<>();
         this.executor.execute(() -> {
             try(Connection conn = this.sqlProvider.getConnection()){
-                PreparedStatement stmt = conn.prepareStatement("SELECT * FROM \"user\" WHERE id=?");
+                PreparedStatement stmt = conn.prepareStatement("SELECT * FROM `user` WHERE id=?");
                 stmt.setInt(1, id);
 
                 ResultSet rs = stmt.executeQuery();
