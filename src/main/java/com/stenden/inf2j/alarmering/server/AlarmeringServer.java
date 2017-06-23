@@ -48,6 +48,7 @@ public final class AlarmeringServer {
     public void start(){
         logger.info("Starting alarmering server");
 
+        //Preload classes from the configuratoin file
         if(this.config.hasPath("preload")){
             for (String preloadClass : this.config.getStringList("preload")) {
                 try {
@@ -62,18 +63,20 @@ public final class AlarmeringServer {
         
         Migrator migrator = this.injector.getInstance(Migrator.class);
         migrator.addMigration(Migration.create("create homepage_news table", "CREATE TABLE alarmering.homepage_news(id INT PRIMARY KEY NOT NULL AUTO_INCREMENT, image VARCHAR(512) NOT NULL, text LONGTEXT NOT NULL);"));
-        migrator.start();
+        migrator.start(); //Run the SQL migrations
 
         try {
             this.userService.refreshDirectories().get();
         } catch (Exception ignored) {}
-        
+
+        //Create and start the http server
         HttpServerBuilder.create()
                 .eventLoop(this.masterGroup, this.childGroup)
                 .useEpoll(this.useEpoll)
                 .addResponseConverter(new JsonResponseConverter())
                 .handlerFactory(this.injector.getInstance(GuiceHandlerFactory.class))
                 .router()
+                    //If you want to add new HTTP routes, add them here
                     .GET   (1000, "/api/geschiedenis/:id", HistoryHandler.class)
                     .GET   (1000, "/api/geschiedenis/:id/", HistoryHandler.class)
                     .POST  (1000, "/api/geschiedenis/:id", AddHistoryHandler.class)

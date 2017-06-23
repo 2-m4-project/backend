@@ -14,6 +14,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * This migrator will migrate the database and dynamically create new tables
+ * Configuration can be added by adding {@link Migration} objects
+ */
 @Singleton
 public class Migrator {
 
@@ -27,16 +31,24 @@ public class Migrator {
         this.sqlProvider = sqlProvider;
     }
 
+    /**
+     * Register a new migration
+     * @param migration The migration to register
+     */
     public void addMigration(Migration migration){
         this.migrations.add(migration);
     }
 
+    /**
+     * Return a log of all migrations to see which succeeded
+     * @return A list of {@link MigrationLog} objects
+     */
     public List<MigrationLog> getMigrationLog(){
         try(Connection conn = this.sqlProvider.getConnection()){
             Statement existsStatement = conn.createStatement();
             ResultSet existsRs = existsStatement.executeQuery("SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='alarmering' AND table_name='migration_log'");
             existsRs.next();
-            if (existsRs.getInt(1) == 0) {
+            if (existsRs.getInt(1) == 0) { //If the 'migration_log' table does not exist, return an empty list
                 existsRs.close();
                 existsStatement.close();
                 return Collections.emptyList();
@@ -44,10 +56,12 @@ public class Migrator {
                 existsRs.close();
                 existsStatement.close();
             }
-            
+
+            //Select the migration log table rows
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery("SELECT * FROM migration_log ORDER BY id ASC");
 
+            //Add the migration log rows to an immutable list
             ImmutableList.Builder<MigrationLog> builder = ImmutableList.builder();
             while(rs.next()){
                 int id = rs.getInt("id");
@@ -67,12 +81,16 @@ public class Migrator {
         }
     }
 
+    /**
+     * Start the migration process
+     */
     public void start(){
         logger.debug("Starting database migration");
         List<MigrationLog> migrationLog = this.getMigrationLog();
 
         try(Connection conn = this.sqlProvider.getConnection()){
             conn.setAutoCommit(false);
+            //Loop through all migrations
             for (Migration migration : this.migrations) {
                 Optional<MigrationLog> logOpt = migrationLog.stream().filter(l -> l.getMigrationId().equals(migration.getId())).findFirst();
                 boolean exists = false;
@@ -102,6 +120,7 @@ public class Migrator {
                 PreparedStatement stmt;
 
                 if(exists){
+                    //The migration already exists, but the result changed. Update it
                     stmt = conn.prepareStatement("UPDATE migration_log SET `sql`=?, `success`=?, `error`=?, `timestamp`=? WHERE migration_id=?");
                     stmt.setString(1, log.getSql());
                     stmt.setBoolean(2, log.isSuccess());
@@ -109,6 +128,7 @@ public class Migrator {
                     stmt.setTimestamp(4, Timestamp.from(log.getTimestamp()));
                     stmt.setString(5, log.getMigrationId());
                 }else{
+                    //The migration is new, add it to the database
                     stmt = conn.prepareStatement("INSERT INTO migration_log(migration_id, `sql`, `success`, `error`, `timestamp`) VALUES (?, ?, ?, ?, ?)");
                     stmt.setString(1, log.getMigrationId());
                     stmt.setString(2, log.getSql());

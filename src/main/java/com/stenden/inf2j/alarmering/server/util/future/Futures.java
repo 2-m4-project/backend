@@ -15,6 +15,13 @@ public final class Futures {
         return future;
     }
 
+    /**
+     * Async supplier. Will execute the method in the specified {@link Executor}, and return the value as a future
+     * @param supplier The supplier to execute
+     * @param executor The executor thread to execute the supplier function in
+     * @param <T> The type of result to return
+     * @return The future of the result of the supplier function
+     */
     public static <T> CompletableFuture<T> supplyAsync(AsyncSupplier<T> supplier, Executor executor){
         CompletableFuture<T> future = new CompletableFuture<T>();
         executor.execute(() -> {
