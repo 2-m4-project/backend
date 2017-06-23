@@ -1,3 +1,7 @@
+plugins {
+    id "com.github.johnrengelman.shadow" version "2.0.0"
+}
+
 apply plugin: "java"
 
 version = "0.1.0-SNAPSHOT"
@@ -27,6 +31,10 @@ jar.manifest {
     attributes "Implementation-Title": "com.stenden.inf2j.alarmering"
     attributes "Implementation-Vendor": "jk-5"
     attributes "Main-Class": "com.stenden.inf2j.alarmering.server.Main"
+}
+
+artifacts {
+    shadowJar;
 }
 
 configurations {
@@ -87,4 +95,4 @@ allprojects {
     }
 }
 
-println(configurations.alpnJar.resolve().first())
+println("ALPN boot argument: -Xbootclasspath/p:" + configurations.alpnJar.resolve().first())
